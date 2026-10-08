@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { AppError } from "../utils/AppError";
 
 class ProductsController {
   //**
@@ -19,6 +20,23 @@ class ProductsController {
 
   create(request: Request, response: Response) {
     const { name, price } = request.body;
+
+    if (!name) {
+      throw new AppError("Nome do produto é obrigatório!", 400);
+    }
+
+    if (name.trim().length < 6) {
+      throw new AppError("Nome do produto precisa ter pelo menos 6 caracteres!", 400);
+    }
+
+    if (price < 0) {
+      throw new AppError("Preço do produto não pode ser menor que 0!", 400);
+    }
+
+    if (!price) {
+      throw new AppError("Preço e do produto é obrigatório!", 400);
+    }
+
     response.status(201).json({ name, price, user_id: request.user_id });
   }
 
